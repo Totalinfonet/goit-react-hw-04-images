@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Blocks } from 'react-loader-spinner';
+import Notiflix from 'notiflix';
+import Loader from '../Loader/Loader';
 
 const API_KEY = '33365759-bdd854990cd5a8ba018a7d8b1';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -30,46 +31,51 @@ export class App extends Component {
     this.setState({ query: event.target.value });
   };
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
     const { query } = this.state;
 
     this.setState({ loading: true });
-    setTimeout(() => {
+    try {
       const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
-      axios
-        .get(BASE_URL + params)
-        .then(response => {
-          this.setState({ images: response.data.hits, error: null, page: 1 });
-        })
-        .catch(error => {
-          this.setState({ error, loading: false });
-        });
-    }, 1000);
+      const response = await axios.get(BASE_URL + params);
+      if (response.data.hits.length > 0) {
+        this.setState({ images: response.data.hits, error: null, page: 1 });
+      } else {
+        this.setState({ images: [], error: null, page: 1 });
+        Notiflix.Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      }
+    } catch (error) {
+      this.setState({ error, loading: false });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
-  handleLoadMore = () => {
+  handleLoadMore = async () => {
     const { query, page } = this.state;
     this.setState({ loading: true });
-    setTimeout(() => {
+
+    try {
       const params = `?q=${query}&page=${
         page + 1
       }&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
-      axios
-        .get(BASE_URL + params)
-        .then(response => {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...response.data.hits],
-            error: null,
-            page: prevState.page + 1,
-          }));
-        })
-        .catch(error => {
-          this.setState({ error, loading: false });
-        });
-    }, 1000);
+      const response = await axios.get(BASE_URL + params);
+
+      this.setState(prevState => ({
+        images: [...prevState.images, ...response.data.hits],
+        error: null,
+        page: prevState.page + 1,
+      }));
+    } catch (error) {
+      this.setState({ error, loading: false });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   handleImageClick = image => {
@@ -86,7 +92,6 @@ export class App extends Component {
 
   handleModalKeyDown = event => {
     if (event.key === 'Escape' || event.keyCode === 27) {
-      console.log(event);
       this.handleModalClose();
     }
   };
@@ -96,8 +101,14 @@ export class App extends Component {
   };
 
   render() {
-    const { images, error, showModal, selectedImage, selectedImageLoaded } =
-      this.state;
+    const {
+      images,
+      error,
+      showModal,
+      selectedImage,
+      selectedImageLoaded,
+      loading,
+    } = this.state;
 
     return (
       <div className="app">
@@ -118,18 +129,7 @@ export class App extends Component {
           </form>
         </header>
 
-        {this.state.loading && (
-          <div className="loader">
-            <Blocks
-              visible={true}
-              height="80"
-              width="80"
-              ariaLabel="blocks-loading"
-              wrapperStyle={{}}
-              wrapperClass="blocks-wrapper"
-            />
-          </div>
-        )}
+        {loading && <Loader />}
 
         {error && <div>Something went wrong: {error.message}</div>}
 
@@ -160,16 +160,7 @@ export class App extends Component {
             tabIndex="0"
           >
             <div className="modal">
-              {!selectedImageLoaded && (
-                <Blocks
-                  visible={true}
-                  height="80"
-                  width="80"
-                  ariaLabel="blocks-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="blocks-wrapper"
-                />
-              )}
+              {!selectedImageLoaded && <Loader />}
               <img
                 src={selectedImage.largeImageURL}
                 alt=""
