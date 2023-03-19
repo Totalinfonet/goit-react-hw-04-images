@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Searchbar from '../Searchbar/Searchbar';
 import Notiflix from 'notiflix';
 import Loader from '../Loader/Loader';
 import Button from '../Button/Button';
@@ -123,22 +124,10 @@ export class App extends Component {
 
     return (
       <div className="app">
-        <header className="searchbar">
-          <form className="form" onSubmit={this.handleSubmit}>
-            <button type="submit" className="button">
-              <span className="button-label">Search</span>
-            </button>
-
-            <input
-              className="input"
-              type="text"
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-              onChange={this.handleChange}
-            />
-          </form>
-        </header>
+        <Searchbar
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
 
         {loading && <Loader />}
 
