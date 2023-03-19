@@ -17,6 +17,15 @@ export class App extends Component {
     selectedImageLoaded: false,
   };
 
+  componentDidUpdate(_, prevState) {
+    if (
+      prevState.images !== this.state.images &&
+      this.state.images.length > 0
+    ) {
+      this.setState({ loading: false });
+    }
+  }
+
   handleChange = event => {
     this.setState({ query: event.target.value });
   };
@@ -25,39 +34,42 @@ export class App extends Component {
     event.preventDefault();
     const { query } = this.state;
 
-    const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
     this.setState({ loading: true });
+    setTimeout(() => {
+      const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
-    axios
-      .get(BASE_URL + params)
-      .then(response => {
-        this.setState({ images: response.data.hits, error: null, page: 1 });
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
+      axios
+        .get(BASE_URL + params)
+        .then(response => {
+          this.setState({ images: response.data.hits, error: null, page: 1 });
+        })
+        .catch(error => {
+          this.setState({ error, loading: false });
+        });
+    }, 1000);
   };
 
   handleLoadMore = () => {
     const { query, page } = this.state;
+    this.setState({ loading: true });
+    setTimeout(() => {
+      const params = `?q=${query}&page=${
+        page + 1
+      }&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
-    const params = `?q=${query}&page=${
-      page + 1
-    }&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-    axios
-      .get(BASE_URL + params)
-      .then(response => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...response.data.hits],
-          error: null,
-          page: prevState.page + 1,
-        }));
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
+      axios
+        .get(BASE_URL + params)
+        .then(response => {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...response.data.hits],
+            error: null,
+            page: prevState.page + 1,
+          }));
+        })
+        .catch(error => {
+          this.setState({ error, loading: false });
+        });
+    }, 1000);
   };
 
   handleImageClick = image => {
@@ -73,7 +85,8 @@ export class App extends Component {
   };
 
   handleModalKeyDown = event => {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' || event.keyCode === 27) {
+      console.log(event);
       this.handleModalClose();
     }
   };
@@ -144,6 +157,7 @@ export class App extends Component {
             className="overlay"
             onClick={this.handleModalClose}
             onKeyDown={this.handleModalKeyDown}
+            tabIndex="0"
           >
             <div className="modal">
               {!selectedImageLoaded && (
