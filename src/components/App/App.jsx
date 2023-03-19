@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Notiflix from 'notiflix';
 import Loader from '../Loader/Loader';
+import Button from '../Button/Button';
 
 const API_KEY = '33365759-bdd854990cd5a8ba018a7d8b1';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -148,9 +149,7 @@ export class App extends Component {
           ))}
         </ul>
         {images.length > 0 && images.length % 12 === 0 && (
-          <button className="load-btn" onClick={this.handleLoadMore}>
-            Load more
-          </button>
+          <Button handleClick={this.handleLoadMore} text={'Load more'} />
         )}
         {showModal && (
           <div
