@@ -1,43 +1,3 @@
-// import axios from 'axios';
-// import React, { Component } from 'react';
-// import { Searchbar } from '../Searchbar/Searchbar';
-// import { ImageGallery } from '../ImageGallery/ImageGallery';
-
-// export class App extends Component {
-//   state = {
-//     images: [],
-//     error: null,
-//   };
-
-//   handleFormSubmit = query => {
-//     const API_KEY = '33365759-bdd854990cd5a8ba018a7d8b1';
-//     const BASE_URL = 'https://pixabay.com/api/';
-//     const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-//     axios
-//       .get(BASE_URL + params)
-//       .then(response => {
-//         this.setState({ images: response.data.hits });
-//       })
-//       .catch(error => {
-//         this.setState({ error });
-//       });
-//   };
-
-//   render() {
-//     const { images, error } = this.state;
-//     return (
-//       <div className="App">
-//         <Searchbar onSubmit={this.handleFormSubmit} />
-//         {error && <div>Something went wrong: {error.message}</div>}
-//         <ImageGallery
-//           images={images}
-//           onImageClick={largeImageURL => console.log(largeImageURL)}
-//         />
-//       </div>
-//     );
-//   }
-// }
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Blocks } from 'react-loader-spinner';
@@ -127,7 +87,7 @@ export class App extends Component {
       this.state;
 
     return (
-      <div className="App">
+      <div className="app">
         <header className="searchbar">
           <form className="form" onSubmit={this.handleSubmit}>
             <button type="submit" className="button">
@@ -164,6 +124,7 @@ export class App extends Component {
           {images.map(({ id, webformatURL, largeImageURL }) => (
             <li key={id} className="gallery-item">
               <img
+                className="image"
                 src={webformatURL}
                 alt=""
                 onClick={() =>
@@ -174,7 +135,9 @@ export class App extends Component {
           ))}
         </ul>
         {images.length > 0 && images.length % 12 === 0 && (
-          <button onClick={this.handleLoadMore}>Load more</button>
+          <button className="load-btn" onClick={this.handleLoadMore}>
+            Load more
+          </button>
         )}
         {showModal && (
           <div
