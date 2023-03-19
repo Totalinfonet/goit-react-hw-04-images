@@ -1,11 +1,14 @@
-// export const ImageGalleryItem = ({
-//   webformatURL,
-//   largeImageURL,
-//   onImageClick,
-// }) => {
-//   return (
-//     <li className="gallery-item">
-//       <img src={webformatURL} alt="" onClick={onImageClick} />
-//     </li>
-//   );
-// };
+const ImageGalleryItem = ({ webformatURL, handleImageClick }) => {
+  return (
+    <li className="gallery-item">
+      <img
+        className="image"
+        src={webformatURL}
+        alt=""
+        onClick={handleImageClick}
+      />
+    </li>
+  );
+};
+
+export default ImageGalleryItem;

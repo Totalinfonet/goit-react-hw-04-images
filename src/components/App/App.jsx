@@ -4,6 +4,7 @@ import Notiflix from 'notiflix';
 import Loader from '../Loader/Loader';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
+import ImageGallery from '../ImageGallery/ImageGallery';
 
 const API_KEY = '33365759-bdd854990cd5a8ba018a7d8b1';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -143,20 +144,10 @@ export class App extends Component {
 
         {error && <div>Something went wrong: {error.message}</div>}
 
-        <ul className="gallery">
-          {images.map(({ id, webformatURL, largeImageURL }) => (
-            <li key={id} className="gallery-item">
-              <img
-                className="image"
-                src={webformatURL}
-                alt=""
-                onClick={() =>
-                  this.handleImageClick({ id, webformatURL, largeImageURL })
-                }
-              />
-            </li>
-          ))}
-        </ul>
+        <ImageGallery
+          images={images}
+          handleImageClick={this.handleImageClick}
+        />
         {images.length > 0 && images.length % 12 === 0 && (
           <Button handleClick={this.handleLoadMore} text={'Load more'} />
         )}

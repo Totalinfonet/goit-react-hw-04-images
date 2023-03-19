@@ -1,16 +1,19 @@
-// import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 
-// export const ImageGallery = ({ images, onImageClick }) => {
-//   return (
-//     <ul className="gallery">
-//       {images.map(({ id, webformatURL, largeImageURL }) => (
-//         <ImageGalleryItem
-//           key={id}
-//           webformatURL={webformatURL}
-//           largeImageURL={largeImageURL}
-//           onImageClick={onImageClick && (() => onImageClick(largeImageURL))}
-//         />
-//       ))}
-//     </ul>
-//   );
-// };
+const ImageGallery = ({ images, handleImageClick }) => {
+  return (
+    <ul className="gallery">
+      {images.map(({ id, webformatURL, largeImageURL }) => (
+        <ImageGalleryItem
+          key={id}
+          webformatURL={webformatURL}
+          handleImageClick={() =>
+            handleImageClick({ id, webformatURL, largeImageURL })
+          }
+        />
+      ))}
+    </ul>
+  );
+};
+
+export default ImageGallery;
