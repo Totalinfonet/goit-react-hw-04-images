@@ -3,6 +3,7 @@ import axios from 'axios';
 import Notiflix from 'notiflix';
 import Loader from '../Loader/Loader';
 import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
 
 const API_KEY = '33365759-bdd854990cd5a8ba018a7d8b1';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -18,6 +19,14 @@ export class App extends Component {
     selectedImage: null,
     selectedImageLoaded: false,
   };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleModalKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleModalKeyDown);
+  }
 
   componentDidUpdate(_, prevState) {
     if (
@@ -152,22 +161,14 @@ export class App extends Component {
           <Button handleClick={this.handleLoadMore} text={'Load more'} />
         )}
         {showModal && (
-          <div
-            className="overlay"
-            onClick={this.handleModalClose}
-            onKeyDown={this.handleModalKeyDown}
-            tabIndex="0"
-          >
-            <div className="modal">
-              {!selectedImageLoaded && <Loader />}
-              <img
-                src={selectedImage.largeImageURL}
-                alt=""
-                onLoad={this.handleImageLoad}
-                style={{ display: selectedImageLoaded ? 'block' : 'none' }}
-              />
-            </div>
-          </div>
+          <Modal
+            showModal={showModal}
+            selectedImage={selectedImage}
+            selectedImageLoaded={selectedImageLoaded}
+            handleModalClose={this.handleModalClose}
+            handleModalKeyDown={this.handleModalKeyDown}
+            handleImageLoad={this.handleImageLoad}
+          />
         )}
       </div>
     );
