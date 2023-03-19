@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const ImageGalleryItem = ({ webformatURL, handleImageClick }) => {
   return (
     <li className="gallery-item">
@@ -9,6 +11,11 @@ const ImageGalleryItem = ({ webformatURL, handleImageClick }) => {
       />
     </li>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  webformatURL: PropTypes.string.isRequired,
+  handleImageClick: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;

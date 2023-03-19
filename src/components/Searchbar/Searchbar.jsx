@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Searchbar = ({ handleChange, handleSubmit }) => (
   <header className="searchbar">
     <form className="form" onSubmit={handleSubmit}>
@@ -16,5 +18,10 @@ const Searchbar = ({ handleChange, handleSubmit }) => (
     </form>
   </header>
 );
+
+Searchbar.propTypes = {
+  handleChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+};
 
 export default Searchbar;

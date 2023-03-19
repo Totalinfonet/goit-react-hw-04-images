@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Loader from '../Loader/Loader';
 
 const Modal = ({
@@ -30,6 +31,15 @@ const Modal = ({
       )}
     </>
   );
+};
+
+Modal.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  selectedImage: PropTypes.object.isRequired,
+  selectedImageLoaded: PropTypes.bool.isRequired,
+  handleModalClose: PropTypes.func.isRequired,
+  handleModalKeyDown: PropTypes.func.isRequired,
+  handleImageLoad: PropTypes.func.isRequired,
 };
 
 export default Modal;
