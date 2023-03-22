@@ -133,10 +133,13 @@ export class App extends Component {
 
         {error && <div>Something went wrong: {error.message}</div>}
 
-        <ImageGallery
-          images={images}
-          handleImageClick={this.handleImageClick}
-        />
+        {images.length > 0 && images.length % 12 === 0 && (
+          <ImageGallery
+            images={images}
+            handleImageClick={this.handleImageClick}
+          />
+        )}
+
         {images.length > 0 && images.length % 12 === 0 && (
           <Button handleClick={this.handleLoadMore} text={'Load more'} />
         )}
