@@ -22,20 +22,9 @@ export class App extends Component {
     selectedImageLoaded: false,
   };
 
-  // componentDidMount() {
-  //   document.addEventListener('keydown', this.handleModalKeyDown);
-  // }
-
-  // componentWillUnmount() {
-  //   document.removeEventListener('keydown', this.handleModalKeyDown);
-  // }
-
-  componentDidUpdate(_, prevState) {
-    if (
-      prevState.images !== this.state.images &&
-      this.state.images.length > 0
-    ) {
-      this.setState({ loading: false });
+  componentDidMount() {
+    if (this.state.query !== '') {
+      this.fetchImages();
     }
   }
 
@@ -43,49 +32,56 @@ export class App extends Component {
     this.setState({ query: event.target.value });
   };
 
-  handleSubmit = async event => {
+  handleSubmit = event => {
     event.preventDefault();
     const { query } = this.state;
 
-    this.setState({ images: [], loading: true });
+    if (query === '') {
+      Notiflix.Notify.info('Enter your search query');
+    } else {
+      this.setState({ page: 1, loading: true }, () => {
+        this.fetchImages(query);
+      });
+    }
+  };
+
+  handleLoadMore = () => {
+    const { query } = this.state;
+    this.setState(
+      prevState => ({
+        page: prevState.page + 1,
+        loading: true,
+      }),
+      () => {
+        this.fetchImages(query);
+      }
+    );
+  };
+
+  fetchImages = async () => {
+    const { query, page } = this.state;
+    this.setState({ loading: true });
 
     try {
-      const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+      const params = `?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
       const response = await axios.get(BASE_URL + params);
-      if (response.data.hits.length > 0) {
-        this.setState({ images: response.data.hits, error: null, page: 1 });
+      if (response.data.hits?.length > 0) {
+        this.setState(prevState => ({
+          images:
+            page === 1
+              ? response.data.hits
+              : [...prevState.images, ...response.data.hits],
+          error: null,
+        }));
       } else {
-        this.setState({ images: [], error: null, page: 1 });
+        this.setState({ images: [], error: null });
         Notiflix.Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.'
         );
       }
     } catch (error) {
-      this.setState({ error, loading: false });
-    } finally {
-      this.setState({ loading: false });
-    }
-  };
-
-  handleLoadMore = async () => {
-    const { query, page } = this.state;
-    this.setState({ loading: true });
-
-    try {
-      const params = `?q=${query}&page=${
-        page + 1
-      }&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
-
-      const response = await axios.get(BASE_URL + params);
-
-      this.setState(prevState => ({
-        images: [...prevState.images, ...response.data.hits],
-        error: null,
-        page: prevState.page + 1,
-      }));
-    } catch (error) {
-      this.setState({ error, loading: false });
+      this.setState({ error });
     } finally {
       this.setState({ loading: false });
     }
@@ -134,7 +130,7 @@ export class App extends Component {
 
         {error && <div>Something went wrong: {error.message}</div>}
 
-        {images.length > 0 && images.length % 12 === 0 && (
+        {images.length > 0 && (
           <ImageGallery
             images={images}
             handleImageClick={this.handleImageClick}
