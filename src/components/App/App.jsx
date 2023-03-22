@@ -140,7 +140,7 @@ export class App extends Component {
           />
         )}
 
-        {images.length > 0 && images.length % 12 === 0 && (
+        {!loading && images.length > 0 && images.length % 12 === 0 && (
           <Button handleClick={this.handleLoadMore} text={'Load more'} />
         )}
         {showModal && (
