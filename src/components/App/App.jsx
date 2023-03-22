@@ -22,13 +22,13 @@ export class App extends Component {
     selectedImageLoaded: false,
   };
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleModalKeyDown);
-  }
+  // componentDidMount() {
+  //   document.addEventListener('keydown', this.handleModalKeyDown);
+  // }
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleModalKeyDown);
-  }
+  // componentWillUnmount() {
+  //   document.removeEventListener('keydown', this.handleModalKeyDown);
+  // }
 
   componentDidUpdate(_, prevState) {
     if (
