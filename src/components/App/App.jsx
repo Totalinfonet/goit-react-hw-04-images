@@ -47,7 +47,8 @@ export class App extends Component {
     event.preventDefault();
     const { query } = this.state;
 
-    this.setState({ loading: true });
+    this.setState({ images: [], loading: true });
+
     try {
       const params = `?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
 
