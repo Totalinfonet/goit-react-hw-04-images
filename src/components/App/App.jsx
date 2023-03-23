@@ -32,10 +32,14 @@ export class App extends Component {
     this.setState({ query: event.target.value });
   };
 
+  clearGallery = () => {
+    this.setState({ images: [] });
+  };
+
   handleSubmit = event => {
     event.preventDefault();
     const { query } = this.state;
-
+    this.clearGallery();
     if (query === '') {
       Notiflix.Notify.info('Enter your search query');
     } else {
@@ -47,6 +51,7 @@ export class App extends Component {
 
   handleLoadMore = () => {
     const { query } = this.state;
+
     this.setState(
       prevState => ({
         page: prevState.page + 1,
