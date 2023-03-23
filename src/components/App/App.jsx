@@ -22,8 +22,11 @@ export class App extends Component {
     selectedImageLoaded: false,
   };
 
-  componentDidMount() {
-    if (this.state.query !== '') {
+  componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.setState({ loading: true });
+
       this.fetchImages();
     }
   }
@@ -39,28 +42,21 @@ export class App extends Component {
   handleSubmit = event => {
     event.preventDefault();
     const { query } = this.state;
+
     this.clearGallery();
     if (query === '') {
       Notiflix.Notify.info('Enter your search query');
+      return;
     } else {
-      this.setState({ page: 1, loading: true }, () => {
-        this.fetchImages(query);
-      });
+      this.setState({ page: 1, loading: true });
     }
   };
 
   handleLoadMore = () => {
-    const { query } = this.state;
-
-    this.setState(
-      prevState => ({
-        page: prevState.page + 1,
-        loading: true,
-      }),
-      () => {
-        this.fetchImages(query);
-      }
-    );
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+      loading: true,
+    }));
   };
 
   fetchImages = async () => {
@@ -86,6 +82,8 @@ export class App extends Component {
         );
       }
     } catch (error) {
+      Notiflix.Notify.failure('Failed to fetch images. Please try again.');
+      console.error(error);
       this.setState({ error });
     } finally {
       this.setState({ loading: false });
