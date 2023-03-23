@@ -22,6 +22,16 @@ export class App extends Component {
     selectedImageLoaded: false,
   };
 
+  handleSubmit = async query => {
+    if (query === '') {
+      Notiflix.Notify.info('Enter your search query');
+      return;
+    } else {
+      this.clearGallery();
+      this.setState({ query, page: 1, loading: true });
+    }
+  };
+
   componentDidUpdate(_, prevState) {
     const { query, page } = this.state;
     if (prevState.query !== query || prevState.page !== page) {
@@ -31,25 +41,8 @@ export class App extends Component {
     }
   }
 
-  handleChange = event => {
-    this.setState({ query: event.target.value });
-  };
-
   clearGallery = () => {
     this.setState({ images: [] });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    const { query } = this.state;
-
-    this.clearGallery();
-    if (query === '') {
-      Notiflix.Notify.info('Enter your search query');
-      return;
-    } else {
-      this.setState({ page: 1, loading: true });
-    }
   };
 
   handleLoadMore = () => {
@@ -124,10 +117,7 @@ export class App extends Component {
 
     return (
       <div className="app">
-        <Searchbar
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-        />
+        <Searchbar handleSubmit={this.handleSubmit} />
 
         {loading && <Loader />}
 
