@@ -24,12 +24,11 @@ const App = () => {
     if (query === '') {
       Notiflix.Notify.info('Enter your search query');
       return;
-    } else {
-      clearGallery();
-      setQuery(query);
-      setPage(1);
-      setLoading(true);
     }
+    setImages([]);
+    setQuery(query);
+    setPage(1);
+    setLoading(true);
   };
 
   useEffect(() => {
@@ -69,10 +68,6 @@ const App = () => {
 
     fetchImages();
   }, [query, page]);
-
-  const clearGallery = () => {
-    setImages([]);
-  };
 
   const handleLoadMore = () => {
     setPage(prevPage => prevPage + 1);
